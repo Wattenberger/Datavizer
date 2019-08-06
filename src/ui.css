@@ -1,0 +1,264 @@
+
+@import url('https://rsms.me/inter/inter.css');
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  background: #363450;
+  color: #FFFFFF;
+  margin-top: 0;
+  font-size: 17px;
+  letter-spacing: -0.013em;
+  padding: 2em 3em;
+  text-align: center;
+}
+
+h2 {
+  font-size: 2.1em;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0em;
+  margin-bottom: 0.6em;
+}
+h6 {
+  font-size: 0.7em;
+  /* font-weight: 400; */
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.3em;
+  margin-bottom: 0.6em;
+}
+
+.fields {
+  height: 8em;
+  display: flex;
+  margin: 1.6em 1em;
+  /* align-items: center;
+  justify-content: center; */
+}
+.fields-section {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+  width: 15em;
+  /* align-items: center;
+  justify-content: center; */
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.3em 0;
+}
+
+.field-short input {
+  flex: 1;
+  /* margin-right: 9em; */
+  /* width: 3em; */
+  text-align: right;
+  max-width: 6em;
+}
+
+label {
+  width: 6em;
+  text-align: right;
+  padding-right: 1em;
+  font-size: 0.8em;
+  display: block;
+  /* width: 9em; */
+  font-weight: 600;
+  margin-bottom: 0.3em;
+  color: white;
+}
+
+select,
+input {
+  width: 16.5em;
+  padding: 0.7em 1.2em;
+  border: #000;
+  background: #26263a;
+  color: #fff;
+  border-radius: 1em;
+  font-family: 'Inter', sans-serif;
+}
+
+select {
+  padding-right: 2em;
+}
+
+select[disabled="true"] {
+  opacity: 0.3;
+}
+
+.nums,
+input[type=number] {
+  font-feature-settings: 'tnum' 1;
+}
+
+select:focus,
+input:focus {
+  background: #000;
+  outline: none;
+  border-color: #6c5ce7;
+}
+::selection {
+  color: #dcdae9;
+  background: #cbc1f1;
+  opacity: 1;
+  padding: 1em;
+}
+
+/* #7195FF */
+button {
+  display: inline-block;
+  padding: 0.8em 1.3em;
+  background: #6c5ce7;
+  color: white;
+  font-size: 0.9em;
+  line-height: 1em;
+  outline: none;
+  cursor: pointer;
+  border-radius: 1em;
+  border-radius: 3em;
+  transition: background 0.2s ease-out;
+  appearance: none;
+  border: none;
+  font-weight: 600;
+  margin-top: 1em;
+}
+
+button.grey {
+  background: #26263a;
+}
+
+button.is-selected,
+button.is-selected:hover,
+button.is-selected:focus,
+button.is-selected:active {
+  background: #6c5ce7;
+  color: white;
+}
+button:hover,
+button:focus,
+button:active {
+  background: #000;
+}
+
+.button-group {
+  display: flex;
+  margin-bottom: 1em;
+  font-size: 0.9em;
+}
+.button-group button:first-of-type {
+  border-radius: 3em 0 0 3em;
+}
+.button-group button:last-of-type {
+  border-radius: 0 3em 3em 0;
+}
+.button-group button {
+  border-radius: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 6em;
+  width: 8em;
+}
+.button-group button svg {
+  fill: #9980fa;
+  margin: 0.6em 0.6em 0.9em;
+  transition: all 0.3s ease-out;
+}
+.button-group button.is-selected svg {
+  fill: #fff;
+}
+
+.button-group-small {
+  width: 34em;
+  margin: 0 auto 0.3em;
+}
+.button-group-small button {
+  height: auto;
+  width: auto;
+  flex: 1;
+  padding: 1.3em 1em;
+}
+.inputfile {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em 0 0;
+  margin-bottom: 1em;
+}
+.inputfile input {
+  padding: 0;
+  width: 0;
+  outline: 0;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+.inputfile label {
+    height: 1.2em;
+    width: 20.3em;
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+    justify-content: flex-start;
+    /* font-weight: 700; */
+    padding: 1em 1.2em;
+    /* color: #cbc1f1; */
+    /* text-align: center; */
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border: 2.5px dotted;
+    border-radius: 1em;
+}
+
+.inputfile label div {
+  flex: 1;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: left;
+}
+.inputfile label svg {
+  flex: none;
+  margin-right: 0.6em;
+}
+
+.inputfile.is-selected label,
+.inputfile input:focus + label,
+.inputfile label:hover {
+    background-color: #9980fa;
+}
+.inputfile label {
+	cursor: pointer;
+}
+.inputfile input:focus + label {
+	outline: 1px dotted #000;
+	outline: -webkit-focus-ring-color auto 5px;
+}
+.error {
+  font-size: 0.8em;
+  line-height: 1.3em;
+  width: 23.3em;
+  text-align: center;
+  margin: 0.7em auto 1.3em;
+  font-style: italic;
+  color: #e29e74;
+}
+
+.actions {
+    margin-top: 1em;
+}
+
+.actions button {
+    margin: 0.3em;
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Datavizer",
+  "id": "736737028247625415",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html"
+}
