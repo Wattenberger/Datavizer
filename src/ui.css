@@ -1,12 +1,11 @@
-
-@import url('https://rsms.me/inter/inter.css');
+@import url("https://rsms.me/inter/inter.css");
 body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   background: #363450;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-top: 0;
   font-size: 17px;
   letter-spacing: -0.013em;
@@ -72,6 +71,7 @@ label {
   font-weight: 600;
   margin-bottom: 0.3em;
   color: white;
+  white-space: nowrap;
 }
 
 select,
@@ -82,7 +82,7 @@ input {
   background: #26263a;
   color: #fff;
   border-radius: 1em;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 select {
@@ -94,8 +94,8 @@ select[disabled="true"] {
 }
 
 .nums,
-input[type=number] {
-  font-feature-settings: 'tnum' 1;
+input[type="number"] {
+  font-feature-settings: "tnum" 1;
 }
 
 select:focus,
@@ -203,22 +203,22 @@ button:active {
   user-select: none;
 }
 .inputfile label {
-    height: 1.2em;
-    width: 20.3em;
-    display: flex;
-    /* flex-direction: column; */
-    align-items: center;
-    justify-content: flex-start;
-    /* font-weight: 700; */
-    padding: 1em 1.2em;
-    /* color: #cbc1f1; */
-    /* text-align: center; */
-    cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border: 2.5px dotted;
-    border-radius: 1em;
+  height: 1.2em;
+  width: 20.3em;
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  justify-content: flex-start;
+  /* font-weight: 700; */
+  padding: 1em 1.2em;
+  /* color: #cbc1f1; */
+  /* text-align: center; */
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 2.5px dotted;
+  border-radius: 1em;
 }
 
 .inputfile label div {
@@ -236,14 +236,14 @@ button:active {
 .inputfile.is-selected label,
 .inputfile input:focus + label,
 .inputfile label:hover {
-    background-color: #9980fa;
+  background-color: #9980fa;
 }
 .inputfile label {
-	cursor: pointer;
+  cursor: pointer;
 }
 .inputfile input:focus + label {
-	outline: 1px dotted #000;
-	outline: -webkit-focus-ring-color auto 5px;
+  outline: 1px dotted #000;
+  outline: -webkit-focus-ring-color auto 5px;
 }
 .error {
   font-size: 0.8em;
@@ -256,9 +256,9 @@ button:active {
 }
 
 .actions {
-    margin-top: 1em;
+  margin-top: 1em;
 }
 
 .actions button {
-    margin: 0.3em;
+  margin: 0.3em;
 }
