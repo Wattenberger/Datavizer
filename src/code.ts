@@ -3,20 +3,51 @@ figma.showUI(__html__, {
   width: 760,
 });
 
+figma.ui.postMessage({
+  type: "init",
+  selectedDimensions: figma.currentPage.selection.map((node) => {
+    const { x, y, width, height } = node;
+    return { x, y, width, height };
+  }),
+});
+
 figma.ui.onmessage = ({ type, data, chartConfig, fields, dimensions }) => {
   // One way of distinguishing between different types of messages sent from
   // your HTML page is to use an object with a "type" property like this.
   if (type === "draw-data") {
+    const { x, y } = figma.viewport.center;
+
     let nodes = [];
     if (chartConfig.type == "bars")
-      drawBars({ chartConfig, data, fields, dimensions, nodes });
+      drawBars({
+        chartConfig,
+        data,
+        fields,
+        dimensions,
+        nodes,
+        center: [x, y],
+      });
     if (chartConfig.type == "scatter")
-      drawScatter({ chartConfig, data, fields, dimensions, nodes });
+      drawScatter({
+        chartConfig,
+        data,
+        fields,
+        dimensions,
+        nodes,
+        center: [x, y],
+      });
     if (chartConfig.type == "line")
-      drawLine({ chartConfig, data, fields, dimensions, nodes });
+      drawLine({
+        chartConfig,
+        data,
+        fields,
+        dimensions,
+        nodes,
+        center: [x, y],
+      });
     const groupedNodes = figma.group(nodes, figma.currentPage);
     figma.currentPage.selection = nodes;
-    figma.viewport.scrollAndZoomIntoView(nodes);
+    // figma.viewport.scrollAndZoomIntoView(nodes);
   }
 
   // Make sure to close the plugin when you're done. Otherwise the plugin will
@@ -35,21 +66,29 @@ const darkColorPaint: Paint[] = [
     color: darkColor,
   },
 ];
-const drawBars = ({ chartConfig, data, fields, dimensions, nodes }) => {
+const drawBars = ({
+  chartConfig,
+  data,
+  fields,
+  dimensions,
+  nodes,
+  center = [],
+}) => {
   if (!fields.padding) fields.padding = 0;
   const barWidth = Math.max(
     chartConfig.width / data.length - fields.padding,
     3
   );
-  console.log(barWidth, chartConfig, fields);
+  const x = center[0] - fields.width / 2;
+  const y = center[1] - fields.height / 2;
 
   data.forEach((d: dataPoint, i: number) => {
     const barHeight = d.yScaled;
     if (!barHeight || barHeight < 0.01) return;
 
     const rect = figma.createRectangle();
-    rect.x = i * (barWidth + fields.padding);
-    rect.y = -barHeight;
+    rect.x = x + i * (barWidth + fields.padding);
+    rect.y = y + -barHeight;
     rect.resize(barWidth, barHeight);
     // rect.fills = darkColorPaint
     rect.fills = darkColorPaint;
@@ -71,11 +110,20 @@ const drawBars = ({ chartConfig, data, fields, dimensions, nodes }) => {
   });
 };
 
-const drawScatter = ({ chartConfig, data, fields, dimensions, nodes }) => {
+const drawScatter = ({
+  chartConfig,
+  data,
+  fields,
+  dimensions,
+  nodes,
+  center = [],
+}) => {
   data.forEach((d: dataPoint, i: number) => {
+    const x = center[0] - fields.width / 2;
+    const y = center[1] - fields.height / 2;
     const ellipse = figma.createEllipse();
-    ellipse.x = d.xScaled;
-    ellipse.y = d.yScaled;
+    ellipse.x = x + d.xScaled;
+    ellipse.y = y + d.yScaled;
     ellipse.resize(fields.radius, fields.radius);
     // ellipse.fills = d.color ? [{type: 'SOLID', color: {r: 1, g: 1, b: 1}}]
     ellipse.fills = darkColorPaint;
@@ -103,7 +151,18 @@ const getRGBProp = (color: string, property: string) => {
   return +color.match(/\d+/g)[index] / 255;
 };
 
-const drawLine = ({ chartConfig, data, fields, dimensions, nodes }) => {
+const drawLine = ({
+  chartConfig,
+  data,
+  fields,
+  dimensions,
+  nodes,
+  center = [],
+}) => {
+  const x = center[0] - fields.width / 2;
+  const y = center[1] - fields.height / 2;
+  console.log(x, y);
+
   const area = figma.createVector();
   let areaPath = chartConfig.areaPath
     .replace(/,/g, " ")
@@ -156,6 +215,11 @@ const drawLine = ({ chartConfig, data, fields, dimensions, nodes }) => {
   line.strokeCap = "ROUND";
   line.strokeWeight = fields.lineWidth;
   figma.currentPage.appendChild(line);
+
+  line.x = x;
+  line.y = y;
+  area.x = x;
+  area.y = y;
 
   nodes.push(line);
   nodes.push(area);

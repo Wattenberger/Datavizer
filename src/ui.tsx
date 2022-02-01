@@ -23,9 +23,36 @@ const App: React.FunctionComponent<AppProps> = () => {
   const [chartType, setChartType] = useState("line")
   const [fieldValues, setFieldValues] = useState({})
   const [dataKeys, setDataKeys] = useState([])
+  const [selectedElementDimensions, setSelectedElementDimensions] = useState([])
   const [fileName, setFileName] = useState(null)
   const [dimensionValues, setDimensionValues] = useState({})
   const [uploadError, setUploadError] = useState(null)
+
+  useEffect(() => {
+    const onMessage = (event: MessageEvent) => {
+      const dimensions = (event.data.pluginMessage || {}).selectedDimensions
+      if (dimensions && dimensions.length) {
+        const largestWidth = Math.max(...dimensions.map(d => d.width))
+        const largestHeight = Math.max(...dimensions.map(d => d.height))
+        setSelectedElementDimensions([
+          largestWidth,
+          largestHeight
+        ])
+        if (fieldValues["width"]) {
+          setFieldValues({
+            ...fieldValues,
+            width: largestWidth || fieldValues["width"],
+            height: largestHeight || fieldValues["height"]
+          })
+        }
+      }
+    }
+
+    window.addEventListener("message", onMessage)
+    return () => {
+      window.removeEventListener("message", onMessage)
+    }
+  })
 
   const setDataTypeLocal = (type: string) => () => {
     setDataType(type)
@@ -52,10 +79,21 @@ const App: React.FunctionComponent<AppProps> = () => {
     let newFieldValues = {
       ...fieldValues,
     };
-    (chartTypes[chartType].fields || []).forEach((field, i: number) => {
+    (chartTypes[chartType].fields || []).forEach(field => {
+      if (field.id === "width") {
+        if (selectedElementDimensions[0] && (!fieldValues["width"] || fieldValues["width"] === selectedElementDimensions[0])) {
+          newFieldValues["width"] = selectedElementDimensions[0]
+          return
+        }
+      } else if (field.id === "height") {
+        if (selectedElementDimensions[1] && (!fieldValues["height"] || fieldValues["height"] === selectedElementDimensions[1])) {
+          newFieldValues["height"] = selectedElementDimensions[1]
+          return
+        }
+      }
       newFieldValues[field.id] = field.initialValue
     });
-    (chartTypes[chartType].dimensionFields || []).forEach((field, i: number) => {
+    (chartTypes[chartType].dimensionFields || []).forEach(field => {
       newFieldValues[field.id] = field.initialValue
     })
     setFieldValues(newFieldValues)
