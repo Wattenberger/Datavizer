@@ -46,7 +46,7 @@ const App: React.FunctionComponent<AppProps> = () => {
     } else if (dataType == "random") {
       setDataKeys([])
     }
-  }, [dataKeys, dataType])
+  }, [dataKeys.join(","), dataType])
 
   useEffect(() => {
     let newFieldValues = {
