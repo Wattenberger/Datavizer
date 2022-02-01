@@ -184,9 +184,14 @@ const App: React.FunctionComponent<AppProps> = () => {
       }
 
       const yValues: number[] = parsedData.map((d: dataPoint) => d.y)
+      const yDomain = [0, d3.max(yValues)]
+      let yRange = [0, chartConfig["height"]]
+      if (chartType === "scatter") {
+        yRange[1] -= fieldValues["radius"] || 0
+      }
       const yScale = d3.scaleLinear()
-        .domain([0, d3.max(yValues)])
-        .range([0, chartConfig.height])
+        .domain(yDomain)
+        .range(yRange)
 
       parsedData = parsedData.map((d: dataPoint) => ({
         ...d,
@@ -194,9 +199,14 @@ const App: React.FunctionComponent<AppProps> = () => {
       }))
 
       const xValues: number[] = parsedData.map((d: dataPoint) => d.x || 0)
+      const xDomain = d3.extent(xValues)
+      let xRange = [0, chartConfig.width]
+      if (chartType === "scatter") {
+        xRange[1] -= (fieldValues["radius"] || 0)
+      }
       const xScale = d3.scaleLinear()
-        .domain(d3.extent(xValues))
-        .range([0, chartConfig.width])
+        .domain(xDomain)
+        .range(xRange)
 
       parsedData = parsedData.map((d: dataPoint) => ({
         ...d,
