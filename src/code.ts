@@ -15,7 +15,13 @@ figma.ui.onmessage = ({ type, data, chartConfig, fields, dimensions }) => {
   // One way of distinguishing between different types of messages sent from
   // your HTML page is to use an object with a "type" property like this.
   if (type === "draw-data") {
-    const { x, y } = figma.viewport.center;
+    const selectedElement = figma.currentPage.selection[0];
+    const position = selectedElement
+      ? [selectedElement.x, selectedElement.y]
+      : [
+          figma.viewport.center.x - chartConfig.width / 2,
+          figma.viewport.center.y - chartConfig.height / 2,
+        ];
 
     let nodes = [];
     if (chartConfig.type == "bars")
@@ -25,7 +31,7 @@ figma.ui.onmessage = ({ type, data, chartConfig, fields, dimensions }) => {
         fields,
         dimensions,
         nodes,
-        center: [x, y],
+        position,
       });
     if (chartConfig.type == "scatter")
       drawScatter({
@@ -34,7 +40,7 @@ figma.ui.onmessage = ({ type, data, chartConfig, fields, dimensions }) => {
         fields,
         dimensions,
         nodes,
-        center: [x, y],
+        position,
       });
     if (chartConfig.type == "line")
       drawLine({
@@ -43,7 +49,7 @@ figma.ui.onmessage = ({ type, data, chartConfig, fields, dimensions }) => {
         fields,
         dimensions,
         nodes,
-        center: [x, y],
+        position,
       });
     const groupedNodes = figma.group(nodes, figma.currentPage);
     figma.currentPage.selection = nodes;
@@ -72,15 +78,15 @@ const drawBars = ({
   fields,
   dimensions,
   nodes,
-  center = [],
+  position = [],
 }) => {
   if (!fields.padding) fields.padding = 0;
   const barWidth = Math.max(
     chartConfig.width / data.length - fields.padding,
     3
   );
-  const x = center[0] - fields.width / 2;
-  const y = center[1] - fields.height / 2;
+  const x = position[0];
+  const y = position[1] + chartConfig.height;
 
   data.forEach((d: dataPoint, i: number) => {
     const barHeight = d.yScaled;
@@ -116,15 +122,15 @@ const drawScatter = ({
   fields,
   dimensions,
   nodes,
-  center = [],
+  position = [],
 }) => {
   data.forEach((d: dataPoint, i: number) => {
-    const x = center[0] - fields.width / 2;
-    const y = center[1] - fields.height / 2;
+    const x = position[0];
+    const y = position[1];
     const ellipse = figma.createEllipse();
+    ellipse.resize(fields.radius, fields.radius);
     ellipse.x = x + d.xScaled;
     ellipse.y = y + d.yScaled;
-    ellipse.resize(fields.radius, fields.radius);
     // ellipse.fills = d.color ? [{type: 'SOLID', color: {r: 1, g: 1, b: 1}}]
     ellipse.fills = darkColorPaint;
     if (d.color) {
@@ -157,11 +163,10 @@ const drawLine = ({
   fields,
   dimensions,
   nodes,
-  center = [],
+  position = [],
 }) => {
-  const x = center[0] - fields.width / 2;
-  const y = center[1] - fields.height / 2;
-  console.log(x, y);
+  const x = position[0];
+  const y = position[1];
 
   const area = figma.createVector();
   let areaPath = chartConfig.areaPath
