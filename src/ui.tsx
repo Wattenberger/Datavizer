@@ -51,8 +51,11 @@ const App: React.FunctionComponent<AppProps> = () => {
   useEffect(() => {
     let newFieldValues = {
       ...fieldValues,
-    }
-    chartTypes[chartType].fields.map((field, i: number) => {
+    };
+    (chartTypes[chartType].fields || []).forEach((field, i: number) => {
+      newFieldValues[field.id] = field.initialValue
+    });
+    (chartTypes[chartType].dimensionFields || []).forEach((field, i: number) => {
       newFieldValues[field.id] = field.initialValue
     })
     setFieldValues(newFieldValues)
@@ -124,11 +127,14 @@ const App: React.FunctionComponent<AppProps> = () => {
 
       if (dataType != "random") {
         dimensionOptions.forEach((dimension: string) => {
-          if (!dimensionValues[dimension]) return;
+          const metric = dimensionValues[dimension]
+          if (!metric && dimension !== "__index__") return;
 
-          parsedData = parsedData.map((d: dataPoint) => ({
+          parsedData = parsedData.map((d: dataPoint, index: number) => ({
             ...d,
-            [dimension]: +(d[dimensionValues[dimension]] || 0),
+            [dimension]: metric === "__index__"
+              ? index
+              : +(d[metric] || 0),
           }))
         })
       }
@@ -183,13 +189,13 @@ const App: React.FunctionComponent<AppProps> = () => {
           .x(accessorFunction("xScaled"))
           .y0(chartConfig.height)
           .y1(accessorFunction("yScaled"))
-          .curve(interpolationFunction)
+        if (interpolationFunction) areaGenerator.curve(interpolationFunction)
         chartConfig.areaPath = areaGenerator(sortedData)
 
         const lineGenerator = d3.line()
           .x(accessorFunction("xScaled"))
           .y(accessorFunction("yScaled"))
-          .curve(interpolationFunction)
+        if (interpolationFunction) lineGenerator.curve(interpolationFunction)
         chartConfig.linePath = lineGenerator(sortedData)
       }
 
@@ -279,6 +285,7 @@ const App: React.FunctionComponent<AppProps> = () => {
                   <option value="">🌟 random 🌟</option>
                 )}
                 <option value="" disabled={dataKeys.length > 0}>-- none --</option>
+                <option value="__index__">[row index]</option>
                 {dataKeys.map(key => (
                   <option key={key}>
                     {key}
@@ -287,7 +294,7 @@ const App: React.FunctionComponent<AppProps> = () => {
               </select>
             </div>
           ))}
-          {(chartTypes[chartType].dimensionFields || []).map(field => (
+          {chartTypes[chartType].dimensionFields && chartTypes[chartType].dimensionFields.map(field => (
             <Field key={field.id} field={field} value={fieldValues[field.id]} onChange={onFieldChangeLocal} />
           ))}
         </div>
